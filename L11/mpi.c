@@ -33,27 +33,26 @@ int main(int argc, char **argv) {
 	Ntotal++; // keep a running tally
  }
 
+ // e. use an all reduce operation
+ long long int Nglobal;
+
+ Ncircle = Ncircle;
+
+ MPI_Allreduce(&Ncircle,
+	       &Nglobal,
+               1,
+               MPI_LONG_LONG_INT,
+	       MPI_SUM,
+ 	       MPI_COMM_WORLD);
  
  double pi = 4.0*Ncircle/ (double) Ntotal;
+ if (rank == 0) {
 
- printf("Our estimate of pi is %f \n", pi);
-
- return 0;
-
- // e. use an all reduce operation
-
-  long long int global;
-  //double sum;
-
-  MPI_Allreduce(
-    &pi,
-    &global,
-    1,  
-    MPI_DOUBLE,
-    MPI_SUM,
-    MPI_COMM_WORLD);
+ 	printf("Our estimate of pi is %f \n", pi);
+ }
 
  MPI_Finalize();
 
+ return 0;
 }
 
