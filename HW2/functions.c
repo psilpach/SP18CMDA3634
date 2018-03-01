@@ -126,16 +126,18 @@ unsigned int findGenerator(unsigned int p) {
 
   /* Q3.3: complete this function and use the fact that p=2*q+1 to quickly find a generator */
 
-  for(int i = 2; i < p; i++) {
-	if((modExp(i,2p) == 1) || (modExp(i, (p-1)/2, p) == 1)) {
-		continue;
+  unsigned int g, q;
+  q = (p - 1)/2;
+  
+  for (int i = 2; i < p; i++) {
+	g = i;
+	
+	if (modExp(g, 2, p) == 1 || modExp(g, q, p) == 1) {
+		i = p;
 	}
-	return i;
   }
-  return 0
 
-
- }
+}
 
 
 
