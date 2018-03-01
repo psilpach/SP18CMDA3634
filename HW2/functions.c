@@ -133,9 +133,13 @@ unsigned int findGenerator(unsigned int p) {
 	g = i;
 	
 	if (modExp(g, 2, p) == 1 || modExp(g, q, p) == 1) {
-		i = p;
+		g++;
+		continue;
 	}
+	break;
   }
+ 
+ return g;
 
 }
 
