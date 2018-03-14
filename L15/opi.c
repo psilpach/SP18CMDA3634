@@ -9,13 +9,11 @@ int main(int argc, char **argv) {
   //seed random number generator
   // Q2b: get the number of threads to run with from agrv and 
   // add OpenMP API code to set number of threads here
-  int thread = atoi(argv[1]);
+  int Nthreads = atoi(argv[1]);
  
-  // tells openMP to use NumThreads threads
-  omp_set_num_threads(thread);
+  // tells openMP to use Nthreads threads
+  omp_set_num_threads(Nthreads);
 
-  int Nthreads = 1; //maybe take this out
- 
   struct drand48_data *drandData; 
   drandData = (struct drand48_data*) malloc(Nthreads*sizeof(struct drand48_data));
  
@@ -36,16 +34,19 @@ int main(int argc, char **argv) {
   long long int Ntotal=0;
   long long int Ncircle=0;
 
-  #pragma ompr for reduction (+:Ncircle)
+  // start run time
+  double start = omp_get_wtime();
+
+  #pragma omp parallel for reduction (+:Ncircle)
   for (long long int n=0; n<Ntrials; n++) {
     double rand1;
     double rand2;
 
-    //int rank = omp_get_thread_num();
+    int rank = omp_get_thread_num();
 
     //generate two random numbers (use the thread id to offset drandData)
-    drand48_r(drandData+0, &rand1);
-    drand48_r(drandData+0, &rand2);
+    drand48_r(drandData+rank, &rand1);
+    drand48_r(drandData+rank, &rand2);
     
     double x = -1 + 2*rand1; //shift to [-1,1]
     double y = -1 + 2*rand2;
@@ -63,10 +64,14 @@ int main(int argc, char **argv) {
   double pi = 4.0*Ncircle/ (double) (Ntotal);
   printf("Our final estimate of pi is %g \n", pi);
 
+  // stop time
+  double stop = omp_get_wtime();
+
+  // print run time
+  double runtime = stop - start;
+  printf("Runtime is %g \n", runtime);
+
   free(drandData);
   
   return 0;
 }
-
-// Q2e: record the runtime of the parallel portion of the program
-//omp_get_wtime();
