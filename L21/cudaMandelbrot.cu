@@ -13,9 +13,9 @@ To create an image with 4096 x 4096 pixels (last argument will be used to set nu
 #include <stdlib.h>
 #include "png_util.h"
 
-#include "cuda.h"
-
 // Q2a: add include for CUDA header file here:
+
+#include "cuda.h"
 
 #define MXITER 1000
 
@@ -91,6 +91,21 @@ int main(int argc, char **argv){
 
   // storage for the iteration counts
   float *count = (float*) malloc(Nre*Nim*sizeof(float));
+  cudaMalloc(&count, Nthreads*sizeof(float));
+
+  // using 2D thread blocks
+  int Bx = Nthreads;
+  int By = Nthreads;
+
+  int Gx = Nre;
+  int Gy = Nim;
+
+  // declare size of block
+  dim3 B(Bx, By, 1); //Bx*By threads in thread-block
+  dim3 G(Gx, Gy, 1); //Gx*Gy grid of thread-block
+
+  // add launch parameters to call to mandelbrot
+  kernalAddMatrices2D <<<G, B>>> (
 
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
