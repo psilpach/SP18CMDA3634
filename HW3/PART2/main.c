@@ -31,11 +31,21 @@ int main (int argc, char **argv) {
   unsigned int p, g, h, x;
  
   if(rank == 0) {
-  //printf("Enter a number of bits: "); fflush(stdout);
-  //char status = scanf("%u",&n);
- 
-  /* Q4.2 alter number of bits instead of allowing user to input */
+  // commented out to get rid of user input for section 4.2
+  printf("Enter a number of bits: "); fflush(stdout);
+  char status = scanf("%u",&n);
 
+  /* Q4.2 alter number of bits instead of allowing user to input */
+  
+  //n = 20; 
+  // for 1: 4.880337
+  // for 2: 3.895412, 3.223508
+  // for 4: 4.186997, 5.032037, 5.184166, 5.239378
+  // for 8: 4.83, 5.01, 5.2, 5.16, 5.23, 5.29, 5.35
+  // for 12: 5.6, 5.7
+  // for 16: 4.3, 4.28, 4.16
+  // for 20: 3.98, 4.01, 4.038
+  
   //make sure the input makes sense
   if ((n<3)||(n>31)) {	//Updated bounds. 2 is no good, 31 is actually ok
     printf("Unsupported bit size.\n");
@@ -63,7 +73,7 @@ int main (int argc, char **argv) {
      determine start and end values so this loop is 
      distributed amounst the MPI ranks  */
 
-  unsigned int N = p-1; //total loop size
+  unsigned int N = p; //-1; total loop size
   unsigned int start, end;
 
   unsigned int cntr = N/size;
@@ -79,6 +89,9 @@ int main (int argc, char **argv) {
 	end = start+(cntr -1);
   }
 
+  double startTime = MPI_Wtime();
+  
+  
   //loop through the values from 'start' to 'end'
   for (unsigned int i=start;i<end;i++) {
     if (modExp(g,i+1,p)==h)
@@ -86,6 +99,15 @@ int main (int argc, char **argv) {
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
+
+  if(rank == 0) { 
+  double endTime = MPI_Wtime();
+  double totalTime = endTime - startTime;
+  double thru = N/totalTime;
+  printf("total time: %f. \n", totalTime);
+  printf("Throughput quantities: %f. \n", thru);
+  }
+
   MPI_Finalize();
 
   return 0;
