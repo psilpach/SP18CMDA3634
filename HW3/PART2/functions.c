@@ -126,7 +126,8 @@ void setupElGamal(unsigned int n, unsigned int *p, unsigned int *g,
  *p = randXbitInt(n);
   while(!isProbablyPrime(*p)){
      *p = randXbitInt(n);
-  }  
+  }
+  
   *g = findGenerator(*p);
   int tempx = randXbitInt(n)%*p;
   x = &tempx; 
