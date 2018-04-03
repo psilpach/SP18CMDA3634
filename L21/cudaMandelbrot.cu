@@ -13,6 +13,8 @@ To create an image with 4096 x 4096 pixels (last argument will be used to set nu
 #include <stdlib.h>
 #include "png_util.h"
 
+#include "cuda.h"
+
 // Q2a: add include for CUDA header file here:
 
 #define MXITER 1000
