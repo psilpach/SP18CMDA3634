@@ -57,7 +57,7 @@ int testpoint(complex_t c){
 // record the  iteration counts in the count array
 
 // Q2c: transform this function into a CUDA kernel
-void  mandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
+__global__ void  kernelMandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
   int n,m;
 
   complex_t c;
@@ -91,21 +91,22 @@ int main(int argc, char **argv){
 
   // storage for the iteration counts
   float *count = (float*) malloc(Nre*Nim*sizeof(float));
-  cudaMalloc(&count, Nthreads*sizeof(float));
+  float *blah;
+  cudaMalloc(&blah, Nthreads*sizeof(float));
 
   // using 2D thread blocks
-  int Bx = Nthreads;
-  int By = Nthreads;
+  int Bx = sqrt(Nthreads);
+  int By = sqrt(Nthreads);
 
-  int Gx = Nre;
-  int Gy = Nim;
+  int Gx = (Bx + sqrt(Nre)-1/Nre);
+  int Gy = (By + sqrt(Nim)-1/Nim);
 
   // declare size of block
   dim3 B(Bx, By, 1); //Bx*By threads in thread-block
   dim3 G(Gx, Gy, 1); //Gx*Gy grid of thread-block
 
-  // add launch parameters to call to mandelbrot
-  kernalAddMatrices2D <<<G, B>>> (
+  // add call to cudaMemcpy to transfer contents
+  cudaMemcpy(blah, count, Nre*Nim*sizeof(float), cudaMemcpyDevicetoHost);
 
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
@@ -122,7 +123,9 @@ int main(int argc, char **argv){
   clock_t start = clock(); //start time in CPU cycles
 
   // compute mandelbrot set
-  mandelbrot(Nre, Nim, cmin, cmax, count); 
+  // add launch parameters to call to mandelbrot
+  mandelbrot<<<G, B>>> (Nre, Nim, cmin, cmax, count);
+  cudaDeviceSynchronize();
   
   clock_t end = clock(); //start time in CPU cycles
   
