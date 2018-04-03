@@ -57,23 +57,37 @@ int testpoint(complex_t c){
 // record the  iteration counts in the count array
 
 // Q2c: transform this function into a CUDA kernel
-__global__ void  kernelMandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
-  int n,m;
+__global__ void  mandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
+  
+  // part ii. 
+  int tx = threadIdx.x;
+  int ty = threadIdx.y;
 
+  int bx = blockIdx.x;
+  int by = blockIdx.y;
+
+  int bSizex = blockDim.x;
+  int bSizey = blockDim.y;
+
+  // part iii.
+  int n = tx + bx*bSizex;
+  int m = ty + by*bSizey;
+
+  // part iv.
   complex_t c;
 
   double dr = (cmax.r-cmin.r)/(Nre-1);
   double di = (cmax.i-cmin.i)/(Nim-1);;
 
-  for(n=0;n<Nim;++n){
-    for(m=0;m<Nre;++m){
+  //for(n=0;n<Nim;++n){
+    //for(m=0;m<Nre;++m){
       c.r = cmin.r + dr*m;
       c.i = cmin.i + di*n;
       
       count[m+n*Nre] = testpoint(c);
       
-    }
-  }
+    //}
+  //}
 
 }
 
