@@ -27,7 +27,7 @@ typedef struct {
 }complex_t;
 
 // return iterations before z leaves mandelbrot set for given c
-int testpoint(complex_t c){
+__device__ int testpoint(complex_t c){
   
   int iter;
 
@@ -57,7 +57,7 @@ int testpoint(complex_t c){
 // record the  iteration counts in the count array
 
 // Q2c: transform this function into a CUDA kernel
-__global__ void  mandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
+__global__ void  kernelMandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
   
   // part ii. 
   int tx = threadIdx.x;
@@ -119,9 +119,6 @@ int main(int argc, char **argv){
   dim3 B(Bx, By, 1); //Bx*By threads in thread-block
   dim3 G(Gx, Gy, 1); //Gx*Gy grid of thread-block
 
-  // add call to cudaMemcpy to transfer contents
-  cudaMemcpy(blah, count, Nre*Nim*sizeof(float), cudaMemcpyDevicetoHost);
-
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
   const float diam  = 0.151579;
@@ -141,6 +138,9 @@ int main(int argc, char **argv){
   mandelbrot<<<G, B>>> (Nre, Nim, cmin, cmax, count);
   cudaDeviceSynchronize();
   
+  // add call to cudaMemcpy to transfer contents
+  cudaMemcpy(blah, count, Nre*Nim*sizeof(float), cudaMemcpyDevicetoHost);
+
   clock_t end = clock(); //start time in CPU cycles
   
   // print elapsed time
