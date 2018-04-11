@@ -2,11 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-<<<<<<< HEAD
 #include "omp.h"
-=======
 
->>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
 #include "functions.h"
 
 //compute a*b mod p safely
@@ -156,11 +153,8 @@ void ElGamalEncrypt(unsigned int *m, unsigned int *a, unsigned int Nints,
                     unsigned int p, unsigned int g, unsigned int h) {
 
   /* Q2.1 Parallelize this function with OpenMP   */
-<<<<<<< HEAD
   #pragma omp parallel for 
-=======
 
->>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
   for (unsigned int i=0; i<Nints;i++) {
     //pick y in Z_p randomly
     unsigned int y;
@@ -183,11 +177,8 @@ void ElGamalDecrypt(unsigned int *m, unsigned int *a, unsigned int Nints,
                     unsigned int p, unsigned int x) {
 
   /* Q2.1 Parallelize this function with OpenMP   */
-<<<<<<< HEAD
   #pragma omp parallel for 
-=======
 
->>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
   for (unsigned int i=0; i<Nints;i++) {
     //compute s = a^x
     unsigned int s = modExp(a[i],x,p);
@@ -205,7 +196,6 @@ void ElGamalDecrypt(unsigned int *m, unsigned int *a, unsigned int Nints,
 void padString(unsigned char* string, unsigned int charsPerInt) {
 
   /* Q1.2 Complete this function   */
-<<<<<<< HEAD
   int i = 1;
   while(strlen(string)%charsPerInt != 0) {
 
@@ -215,15 +205,12 @@ void padString(unsigned char* string, unsigned int charsPerInt) {
   }
 
   *(string + strlen(string)) = '\0';
-=======
->>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
 
 }
 
 
 void convertStringToZ(unsigned char *string, unsigned int Nchars,
                       unsigned int  *Z,      unsigned int Nints) {
-<<<<<<< HEAD
   
   unsigned int charsPerInt = Nchars/Nints;
   /* Q1.3 Complete this function   */
@@ -236,19 +223,11 @@ void convertStringToZ(unsigned char *string, unsigned int Nchars,
 	} //end inner for loop
   } // end outer for
 } // end convertStringToZ function
-=======
-
-  /* Q1.3 Complete this function   */
-  /* Q2.2 Parallelize this function with OpenMP   */
-
-}
->>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
 
 
 void convertZToString(unsigned int  *Z,      unsigned int Nints,
                       unsigned char *string, unsigned int Nchars) {
-<<<<<<< HEAD
- 
+
  unsigned int charsPerInt = Nchars/Nints;
   /* Q1.4 Complete this function   */
   /* Q2.2 Parallelize this function with OpenMP   */
@@ -260,10 +239,3 @@ void convertZToString(unsigned int  *Z,      unsigned int Nints,
 	} //end inner for loop
   } // end outer for
 } // end convertZToString method
-=======
-
-  /* Q1.4 Complete this function   */
-  /* Q2.2 Parallelize this function with OpenMP   */
-
-}
->>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
