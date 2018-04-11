@@ -57,7 +57,7 @@ __device__ int testpoint(complex_t c){
 // record the  iteration counts in the count array
 
 // Q2c: transform this function into a CUDA kernel
-__global__ void  kernelMandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
+__global__ void mandelbrot(int Nre, int Nim, complex_t cmin, complex_t cmax, float *count){ 
   
   // part ii. 
   int tx = threadIdx.x;
@@ -104,20 +104,9 @@ int main(int argc, char **argv){
   // Q2b: set the number of threads per block and the number of blocks here:
 
   // storage for the iteration counts
-  float *count = (float*) malloc(Nre*Nim*sizeof(float));
-  float *blah;
-  cudaMalloc(&blah, Nthreads*sizeof(float));
-
-  // using 2D thread blocks
-  int Bx = sqrt(Nthreads);
-  int By = sqrt(Nthreads);
-
-  int Gx = (Bx + sqrt(Nre)-1/Nre);
-  int Gy = (By + sqrt(Nim)-1/Nim);
-
-  // declare size of block
-  dim3 B(Bx, By, 1); //Bx*By threads in thread-block
-  dim3 G(Gx, Gy, 1); //Gx*Gy grid of thread-block
+  float *h_count = (float*) malloc(Nre*Nim*sizeof(float));
+  float *d_count;
+  cudaMalloc(*d_count, Nre*Nim*sizeof(float));
 
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
@@ -131,17 +120,28 @@ int main(int argc, char **argv){
   cmin.i = centIm - 0.5*diam;
   cmax.i = centIm + 0.5*diam;
 
+  // using 2D thread blocks
+  int Bx = sqrt(Nthreads);
+  int By = sqrt(Nthreads);
+
+  int Gx = (Bx + sqrt(Nre)-1/Nre);
+  int Gy = (By + sqrt(Nim)-1/Nim);
+
+  // declare size of block
+  dim3 B(Bx, By, 1); //Bx*By threads in thread-block
+  dim3 G(Gx, Gy, 1); //Gx*Gy grid of thread-block
+
   clock_t start = clock(); //start time in CPU cycles
 
   // compute mandelbrot set
   // add launch parameters to call to mandelbrot
-  mandelbrot<<<G, B>>> (Nre, Nim, cmin, cmax, count);
+  mandelbrot<<<G, B>>> (Nre, Nim, cmin, cmax, d_count);
   cudaDeviceSynchronize();
   
-  // add call to cudaMemcpy to transfer contents
-  cudaMemcpy(blah, count, Nre*Nim*sizeof(float), cudaMemcpyDevicetoHost);
-
   clock_t end = clock(); //start time in CPU cycles
+
+  // add call to cudaMemcpy to transfer contents
+  cudaMemcpy(h_count, d_count, Nre*Nim*sizeof(float), cudaMemcpyDevicetoHost);
   
   // print elapsed time
   printf("elapsed = %f\n", ((double)(end-start))/CLOCKS_PER_SEC);
@@ -153,7 +153,8 @@ int main(int argc, char **argv){
   write_hot_png(fp, Nre, Nim, count, 0, 80);
   printf("done.\n");
 
-  free(count);
+  free(h_count);
+  cudaFree(d_count);
 
   exit(0);
   return 0;
