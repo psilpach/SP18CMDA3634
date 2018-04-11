@@ -292,5 +292,4 @@ int write_hot_png(FILE *outfile, int width, int height, float *img, float minI, 
   write_png(outfile, width, height, rgb, NULL);
 
   free(rgb);
-
 }

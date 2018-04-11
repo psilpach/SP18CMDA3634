@@ -23,10 +23,6 @@
 #include <png.h>
 //#include <png.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 int read_png(const char *filename, int *width, int *height, unsigned char **rgb, 
 	     unsigned char **alpha);
 
@@ -35,6 +31,3 @@ int write_png(FILE *outfile, int width, int height, unsigned char *rgb,
 
 int write_gray_png(FILE *outfile, int width, int height, float *img, float minI, float maxI);
 int write_hot_png(FILE *outfile, int width, int height, float *img, float minI, float maxI);
-#ifdef __cplusplus
-}
-#endif

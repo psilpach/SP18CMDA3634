@@ -9,7 +9,11 @@
 
 int main (int argc, char **argv) {
 
+<<<<<<< HEAD
   int Nthreads = 1; // change this every time you run this
+=======
+  int Nthreads = 1;
+>>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
 
   omp_set_num_threads(Nthreads);
 
@@ -46,7 +50,11 @@ int main (int argc, char **argv) {
   printf("Message = \"%s\"\n", message);
 
   /* Q1.1 Finish this line   */
+<<<<<<< HEAD
   unsigned int charsPerInt = n/8;
+=======
+  unsigned int charsPerInt = ;
+>>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
 
   padString(message, charsPerInt);
   printf("Padded Message = \"%s\"\n", message);
@@ -88,6 +96,7 @@ int main (int argc, char **argv) {
 
   /* Q2.3 Parallelize this loop with OpenMP   */
   double startTime = omp_get_wtime();
+<<<<<<< HEAD
   unsigned int val = 0;
 
   #pragma omp parallel for shared(val)
@@ -95,6 +104,11 @@ int main (int argc, char **argv) {
     if (val == 0 && modExp(g,i+1,p)==h) {
       printf("Secret key found! x = %u \n", i);
       val = 1;
+=======
+  for (unsigned int i=0;i<p-1;i++) {
+    if (modExp(g,i+1,p)==h) {
+      printf("Secret key found! x = %u \n", i);
+>>>>>>> fba25462602970f02f21ea4c81ff11d3c3bdebc2
     } 
   }
   double endTime = omp_get_wtime();
