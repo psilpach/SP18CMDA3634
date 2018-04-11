@@ -106,7 +106,7 @@ int main(int argc, char **argv){
   // storage for the iteration counts
   float *h_count = (float*) malloc(Nre*Nim*sizeof(float));
   float *d_count;
-  cudaMalloc(*d_count, Nre*Nim*sizeof(float));
+  cudaMalloc(&d_count, Nre*Nim*sizeof(float));
 
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
@@ -150,7 +150,7 @@ int main(int argc, char **argv){
   FILE *fp = fopen("mandelbrot.png", "w");
 
   printf("Printing mandelbrot.png...");
-  write_hot_png(fp, Nre, Nim, count, 0, 80);
+  write_hot_png(fp, Nre, Nim, h_count, 0, 80);
   printf("done.\n");
 
   free(h_count);
