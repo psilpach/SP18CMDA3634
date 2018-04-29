@@ -33,7 +33,7 @@ __device__ unsigned int modExpC(unsigned int a, unsigned int b, unsigned int p) 
   return aExpb;
 } // end modprodC function
 
-  __global__ void findSecretKey(unsigned int g, unsigned int h, unsigned int p, unsigned int *d_a) {
+  __global__ void findSecretKey(unsigned int p, unsigned int g, unsigned int h, unsigned int *d_a) {
   
   int threadId = threadIdx.x;
   int blockId = blockIdx.x;
@@ -66,10 +66,8 @@ int main (int argc, char **argv) {
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
   
-  // for bonus just change the quotes to "bonus_public_key.txt", pretty self explanatory 
-  FILE* pk = fopen("public_key.txt","r");
-  // same for this except change quotes to "bonus_message.txt" 
-  FILE* msg = fopen("messages.txt", "r"); 
+  FILE* pk = fopen("bonus_public_key.txt","r");
+  FILE* msg = fopen("bonus_message.txt", "r");
   fscanf(pk, "%u\n%u\n%u\n%u\n", &n, &p, &g, &h);
   fclose(pk);
   fscanf(msg, "%u\n", &Nints);

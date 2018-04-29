@@ -21,6 +21,10 @@ int main (int argc, char **argv) {
 
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
+  
+  FILE* pk = fopen("public_key.txt","r");
+  fscanf(pk, "%u\n%u\n%u\n%u\n", &n, &p, &g, &h);
+  fclose(pk);
 
   // find the secret key
   if (x==0 || modExp(g,x,p)!=h) {
@@ -42,6 +46,26 @@ int main (int argc, char **argv) {
   }
 
   /* Q3 After finding the secret key, decrypt the message */
+  FILE* msg = fopen("messages.txt", "r");
+  fscanf(msg, "%u\n", &Nints);
 
-  return 0;
+  unsigned int *mhat = (unsigned int *) malloc(Nints*sizeof(unsigned int));
+  unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
+
+  for (int i = 0; i < Nints; i++) {
+    fscanf(msg, "%u %u\n", &mhat[i], &a[i]);
+  } 
+  fclose(msg);
+
+  unsigned char *decrypted = (unsigned char *) malloc(1024*sizeof(unsigned char));
+  unsigned int charsPerInt = sizeof(p) / sizeof(n);
+  unsigned int Nchars = Nints * charsPerInt;
+
+  ElGamalDecrypt(mhat, a, Nints, p, x);  
+
+  convertZToString(mhat, Nints, decrypted, Nchars);
+  printf("Decrypted message: %s\n", decrypted);
+    
+return 0;
+ 
 }
